@@ -1,0 +1,28 @@
+# 바뀐 파일 위치 -> area 라벨 규칙 (.github/workflows/pr-labeler.yml 이 사용)
+
+area/canary:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'src/**'
+
+area/infra:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'infra/**'
+
+area/build:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'requirements*.txt'
+      - 'pyproject.toml'
+
+area/ci:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '.github/**'
+
+area/docs:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'docs/**'
+      - '**/*.md'
