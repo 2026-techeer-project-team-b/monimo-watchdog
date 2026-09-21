@@ -1,0 +1,35 @@
+# 비밀값 (퍼블릭 레포: 절대 올리지 않는다)
+.env
+.env.*
+!.env.example
+*.pem
+*.jks
+*.key
+*.p12
+
+# 에디터 · OS
+.idea/
+.vscode/
+*.iml
+.DS_Store
+
+# 로그
+*.log
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.zip
+
+# Terraform (state와 변수 파일에 비밀값이 들어간다)
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+crash.log
+
+# 로컬 AI 도구 작업 기록 (레포에 올리지 않는다)
+.omc/
