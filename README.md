@@ -22,7 +22,13 @@
 
 | 이름 | 설명 |
 |---|---|
-| (준비 중) | |
+| `SHOP_ORDER_URL` | 카나리가 호출할 쇼핑몰 주문 API |
+| `API_SERVER_URL` | 카나리 신선도를 조회할 API 서버 |
+| `PING_URL` | Healthchecks.io 핑 주소 (Dead Man's Switch) |
+| `SLACK_WEBHOOK` | 파수꾼 전용 슬랙 웹훅 (관제 스택과 별도 채널) |
+| `CANARY_WAIT_SECONDS` | 주문 호출 뒤 조회까지 기다리는 시간(초), 기본 30 |
+
+운영(Lambda)에서는 `infra/` 의 Terraform 이 같은 이름으로 넣는다.
 
 ## 포트
 
