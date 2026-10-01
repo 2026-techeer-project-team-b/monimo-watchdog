@@ -1,0 +1,46 @@
+# PR 에서 테스트와 Terraform 형식을 본다. AWS 에는 닿지 않는다.
+name: ci
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - name: 개발 의존성 설치
+        run: pip install -r requirements-dev.txt
+      - name: 테스트
+        run: pytest
+
+  terraform:
+    name: terraform
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra
+    steps:
+      - uses: actions/checkout@v7
+      - uses: hashicorp/setup-terraform@v4
+      - name: 형식
+        run: terraform fmt -check -recursive
+      - name: 검사
+        # 백엔드 설정 없이 본다. state 에 닿지 않으므로 PR 에서 돌려도 안전하다
+        run: |
+          terraform init -backend=false
+          terraform validate
