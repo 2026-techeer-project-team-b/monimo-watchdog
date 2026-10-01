@@ -8,7 +8,11 @@ import canary
 import notify
 
 log = logging.getLogger(__name__)
+
 logging.basicConfig(level=logging.INFO)
+# Lambda 런타임이 루트 핸들러를 미리 달아 두어 위 줄이 아무 일도 하지 않는다. 평문 로그의
+# 파이썬 런타임 기본 레벨은 WARN 이라, 직접 올리지 않으면 age_sec 이 CloudWatch 에 남지 않는다
+logging.getLogger().setLevel(logging.INFO)
 
 
 class Config(NamedTuple):
