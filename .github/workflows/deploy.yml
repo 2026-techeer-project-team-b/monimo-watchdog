@@ -21,6 +21,9 @@ concurrency:
 jobs:
   deploy:
     name: deploy
+    # 배포 대상이 정해지기 전에는 건너뛴다. 안 그러면 머지하자마자 main 이 빨갛게 된다.
+    # 변수를 채우는 것이 곧 배포를 켜는 스위치다 (일정의 schedule_enabled 와 같은 뜻)
+    if: vars.LAMBDA_FUNCTION_NAME != ''
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7

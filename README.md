@@ -79,7 +79,7 @@ Terraform 에 기본값을 두지 않았다. 아래가 정해져야 `terraform p
 | `terraform.tfvars` | `aws_region` · `shop_order_url` · `api_server_url` |
 | `terraform.tfvars` 또는 `TF_VAR_*` | `monimo_internal_token`(API 서버와 같은 값) · `slack_webhook` · `ping_url` |
 | 레포 Secret `AWS_DEPLOY_ROLE_ARN` | GitHub OIDC 를 신뢰하는 배포 역할 |
-| 레포 Variable `AWS_REGION` · `LAMBDA_FUNCTION_NAME` | `terraform output` 으로 나온다 |
+| 레포 Variable `AWS_REGION` · `LAMBDA_FUNCTION_NAME` | `terraform output` 으로 나온다. **이 둘이 비어 있으면 `deploy.yml` 이 통째로 건너뛴다** |
 
 ## 관련 문서
 
