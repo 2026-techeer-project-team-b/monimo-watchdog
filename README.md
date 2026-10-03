@@ -93,3 +93,7 @@ Terraform 에 기본값을 두지 않았다. 아래가 정해져야 `terraform p
 - `main` · `develop` 직접 push 금지, PR로만 머지. PR 의 base 는 기본값(`develop`) 그대로 두면 된다
 - 브랜치: `feat/<이슈번호>-<설명>` · `fix/<이슈번호>-<설명>` · `chore/<설명>`
 - 커밋: `<타입>: <요약> (#이슈)` 한 줄 (타입: feat · fix · docs · chore · refactor · test · ci). 이 레포는 모듈이 하나라 범위를 붙이지 않는다
+
+## AI 와 일한 방법 (승조가 맡은 부분)
+
+파수꾼 담당은 재범(`@jaebeom79`)이다. 승조(`@SeungJo-02`)가 맡은 초기 구성 · PR 라벨 · CODEOWNERS · develop 전략 · `AGENTS.md`(`#1` `#2` `#3` `#9` `#12`)는 AI(Claude Code)와 함께 만들었다. 절차 · 역할 분담 · 토큰 기준값 · AI 가 틀린 것과 잡은 방법은 `monimo-backend` 의 [`docs/harness/`](https://github.com/2026-techeer-project-team-b/monimo-backend/blob/HEAD/docs/harness/README.md)(정본), 이 레포에서 무엇을 어떻게 물었는지는 [`docs/prompts/`](docs/prompts/README.md) 에 있다. 재범의 작업 방식은 여기서 말하지 않는다.
