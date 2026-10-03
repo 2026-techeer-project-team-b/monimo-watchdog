@@ -63,6 +63,7 @@ CI 는 **test**(pytest) 와 **terraform**(`fmt -check` · `init -backend=false` 
 - **`#5`** Terraform — Lambda · EventBridge Scheduler(1분, **꺼진 채로 생성** `schedule_enabled = false`) · IAM · 로그 그룹. GitHub Actions OIDC 로 역할을 빌려 `deploy.yml` 이 zip 을 교체
 - **`#8`** 라벨러 3개를 한 워크플로로 합침 — 따로 돌면 `type` 라벨이 지워지는 문제
 - **`#9`** develop 브랜치 전략 — 워크플로 트리거 `[main, develop]`, 기여 규칙
+- **`#12`** `AGENTS.md` · `CLAUDE.md`, README 「AI 와 일한 방법」 절(승조가 맡은 부분만), `docs/prompts/`. 하네스 정본은 backend `docs/harness/README.md` 한 곳
 
 ## 6. 지금 막혀 있는 것
 
