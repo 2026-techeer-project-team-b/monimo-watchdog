@@ -3,7 +3,7 @@
 파수꾼: 우리 스택 바깥에서 카나리 데이터로 파이프라인이 살아 있는지 확인하는 Lambda
 
 - 기술: Python · Terraform · AWS Lambda · EventBridge Scheduler
-- 상태: 카나리 한 주기 구현 완료. 배포(Terraform · OIDC)는 아직
+- 상태: 카나리 한 주기 + 배포 정의 완료. **일정은 꺼 둔 상태**
 
 ## 폴더 구성
 
@@ -13,7 +13,7 @@
 | `src/canary.py` | `traceparent` 생성 · 쇼핑몰 주문 호출 · 신선도 조회 |
 | `src/notify.py` | Slack 웹훅 · Healthchecks.io 핑 |
 | `tests/` | pytest. 네트워크를 타지 않는다 |
-| `infra/` | Terraform: Lambda · EventBridge Scheduler |
+| `infra/` | Terraform: Lambda · EventBridge Scheduler · IAM · 로그 그룹 |
 
 표준 라이브러리만 쓴다. `src/` 내용물을 zip 으로 묶어 올리는 것이 배포의 전부다.
 
@@ -53,6 +53,33 @@ PYTHONPATH=src python -c 'from handler import Config, run; print(run(Config.from
 | `SLACK_WEBHOOK` | 파수꾼 전용 슬랙 웹훅 (관제 스택과 별도 채널) |
 
 운영(Lambda)에서는 `infra/` 의 Terraform 이 같은 이름으로 넣는다.
+
+## 배포
+
+스택 안에 두면 스택이 죽을 때 감시자도 같이 죽는다. 그래서 AWS Lambda 다. 영구 액세스 키를 레포에 두지 않으려고 GitHub Actions **OIDC** 로 역할을 빌린다.
+
+```bash
+cd infra
+cp terraform.tfvars.example terraform.tfvars      # 값을 채운다
+terraform init -backend-config=backend.hcl        # 버킷 · 키 · 리전
+terraform plan
+```
+
+**일정은 꺼진 채로 만들어진다**(`schedule_enabled = false`). 조회 문 `GET /api/v1/internal/canary/freshness` 가 아직 없어서 켜면 1분마다 오탐 Slack 이 하루 1,440번 간다. 조회 문이 들어온 뒤 `true` 로 바꾼다.
+
+`main` 에 `src/` 가 바뀌어 올라가면 `deploy.yml` 이 zip 을 다시 올린다. 인프라 자체(일정 · IAM · 환경변수)는 Terraform 으로만 바꾼다.
+
+### 배포 파트와 맞출 것
+
+Terraform 에 기본값을 두지 않았다. 아래가 정해져야 `terraform plan` 이 돈다.
+
+| 어디에 | 무엇 |
+|---|---|
+| `terraform init -backend-config` | state 를 둘 S3 버킷 · 키 · 리전 |
+| `terraform.tfvars` | `aws_region` · `shop_order_url` · `api_server_url` |
+| `terraform.tfvars` 또는 `TF_VAR_*` | `monimo_internal_token`(API 서버와 같은 값) · `slack_webhook` · `ping_url` |
+| 레포 Secret `AWS_DEPLOY_ROLE_ARN` | GitHub OIDC 를 신뢰하는 배포 역할 |
+| 레포 Variable `AWS_REGION` · `LAMBDA_FUNCTION_NAME` | `terraform output` 으로 나온다. **이 둘이 비어 있으면 `deploy.yml` 이 통째로 건너뛴다** |
 
 ## 관련 문서
 
