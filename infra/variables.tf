@@ -18,15 +18,18 @@ variable "schedule_enabled" {
 }
 
 variable "schedule_expression" {
-  description = "EventBridge Scheduler 주기. 최소 1분"
+  # rate 의 단위는 값이 1 이어도 복수형이다 — 문서상 유효 입력이 minutes | hours | days 뿐이다
+  description = "EventBridge Scheduler 주기"
   type        = string
-  default     = "rate(1 minute)"
+  default     = "rate(1 minutes)"
 }
 
 variable "lambda_timeout_sec" {
-  description = "한 주기는 2~3초면 끝난다. 주문 10 + 조회 10 + 알림 5 + 핑 5 를 다 쓰는 최악을 덮는 값"
+  # HTTP 타임아웃 합(10+10+5+5=30)보다 커야 한다. urllib 의 timeout 은 총 시간이 아니라 작업 하나당이라
+  # 합이 상한을 보장하지 않는다. 여기서 잘리면 finally 의 핑을 못 보내 Healthchecks 가 죽음으로 오진한다
+  description = "한 주기는 2~3초면 끝난다. 최악의 경우에도 핑까지 마치도록 여유를 둔 값"
   type        = number
-  default     = 30
+  default     = 45
 }
 
 variable "log_retention_days" {

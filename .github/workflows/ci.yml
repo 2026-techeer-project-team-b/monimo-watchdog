@@ -5,7 +5,7 @@ on:
   # base 를 main 으로 한정하지 않는다. PR 을 쌓아 올릴 때도 검사가 돌아야 한다
   pull_request:
   push:
-    branches: [main]
+    branches: [main, develop]
 
 permissions:
   contents: read

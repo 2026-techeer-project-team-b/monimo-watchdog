@@ -95,7 +95,7 @@ resource "aws_scheduler_schedule" "cycle" {
   schedule_expression = var.schedule_expression
   state               = var.schedule_enabled ? "ENABLED" : "DISABLED"
 
-  # 1분 주기에 흔들림을 허용하면 age_sec 이 흔들려 기준값을 잡기 어려워진다
+  # 흔들림 창을 더 얹지 않는다. 그래도 Scheduler 자체 정밀도가 60초라 주기 간격은 ±59초 흔들린다
   flexible_time_window {
     mode = "OFF"
   }
