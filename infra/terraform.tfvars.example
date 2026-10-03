@@ -1,0 +1,14 @@
+# 이름만 둔다. 값을 채운 *.tfvars 는 .gitignore 가 막는다.
+# 채우는 법: 이 파일을 terraform.tfvars 로 복사한 뒤 값을 넣는다.
+
+aws_region     = ""
+shop_order_url = ""
+api_server_url = ""
+
+# 비밀값. 파일에 적기 싫으면 TF_VAR_monimo_internal_token 처럼 환경변수로 넣어도 된다
+monimo_internal_token = ""
+slack_webhook         = ""
+ping_url              = ""
+
+# 조회 문(GET /api/v1/internal/canary/freshness)이 들어온 뒤에 true 로 바꾼다
+schedule_enabled = false
