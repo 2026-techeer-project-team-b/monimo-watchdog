@@ -35,6 +35,17 @@ def test_카나리가_끊기면_slack_을_부른다():
     assert "900초 전" in slack.calls[0][1]
 
 
+def test_카나리가_한_건도_없어도_STALE_이고_문구에_None_이_없다():
+    slack = Spy()
+    none = {"last_signal_at": None, "age_sec": None, "threshold_sec": 180, "fresh": False}
+
+    result = run(CONFIG, send_order=Spy("tp"), fetch_freshness=Spy(none), post_slack=slack, ping=Spy())
+
+    assert result == {"result": "STALE"}
+    assert "None" not in slack.calls[0][1]
+    assert "마지막 신호 없음" in slack.calls[0][1]
+
+
 def test_조회가_터져도_핑은_나간다():
     heartbeat = Spy()
 
