@@ -14,7 +14,8 @@ TRACESTATE = "monimon=canary"
 # 카나리가 처음 닿는 서비스. 판정 대상을 하나로 고정해야 age_sec 이 흔들리지 않는다
 SERVICE_NAME = "shop-order"
 
-ORDER_BODY = {"productId": "canary", "quantity": 1, "amount": 1000}
+# 재고 표에 있는 상품이어야 한다. 없는 상품은 재고 서비스 404 → 주문 502 라 매 분 ORDER_FAILED 가 간다 (k6 와 같은 P-100)
+ORDER_BODY = {"productId": "P-100", "quantity": 1, "amount": 1000}
 
 ORDER_TIMEOUT_SEC = 10
 FRESHNESS_TIMEOUT_SEC = 10
