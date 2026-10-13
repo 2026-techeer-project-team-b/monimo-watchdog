@@ -46,7 +46,7 @@ PYTHONPATH=src python -c 'from handler import Config, run; print(run(Config.from
 
 | 이름 | 설명 |
 |---|---|
-| `SHOP_ORDER_URL` | 카나리가 호출할 쇼핑몰 주문 API |
+| `SHOP_ORDER_URL` | 카나리가 호출할 쇼핑몰 주문 API. 게이트웨이(8090)를 거친다 (shop `#26`). 상품은 재고 표에 있는 `P-100` |
 | `API_SERVER_URL` | 카나리 신선도를 조회할 API 서버 |
 | `PING_URL` | Healthchecks.io 핑 주소 (Dead Man's Switch) |
 | `MONIMO_INTERNAL_TOKEN` | 내부 문 출입증. API 서버의 같은 이름 값과 맞춘다 |
@@ -65,7 +65,7 @@ terraform init -backend-config=backend.hcl        # 버킷 · 키 · 리전
 terraform plan
 ```
 
-**일정은 꺼진 채로 만들어진다**(`schedule_enabled = false`). 조회 문 `GET /api/v1/internal/canary/freshness` 가 아직 없어서 켜면 1분마다 오탐 Slack 이 하루 1,440번 간다. 조회 문이 들어온 뒤 `true` 로 바꾼다.
+**일정은 꺼진 채로 만들어진다**(`schedule_enabled = false`). 조회 문 `GET /api/v1/internal/canary/freshness` 는 들어왔다(backend `#160`). AWS 계정 · 결제가 준비되면(10/17) `terraform apply` 뒤 `true` 로 바꾸고, 주문 201 과 `age_sec` 로그를 며칠 모아 기준 180초를 확인한다.
 
 `main` 에 `src/` 가 바뀌어 올라가면 `deploy.yml` 이 zip 을 다시 올린다. 인프라 자체(일정 · IAM · 환경변수)는 Terraform 으로만 바꾼다.
 
@@ -76,7 +76,7 @@ Terraform 에 기본값을 두지 않았다. 아래가 정해져야 `terraform p
 | 어디에 | 무엇 |
 |---|---|
 | `terraform init -backend-config` | state 를 둘 S3 버킷 · 키 · 리전 |
-| `terraform.tfvars` | `aws_region` · `shop_order_url` · `api_server_url` |
+| `terraform.tfvars` | `aws_region`(서울 `ap-northeast-2`, 스택과 같은 리전 · backend ADR `#62`) · `shop_order_url` · `api_server_url` |
 | `terraform.tfvars` 또는 `TF_VAR_*` | `monimo_internal_token`(API 서버와 같은 값) · `slack_webhook` · `ping_url` |
 | 레포 Secret `AWS_DEPLOY_ROLE_ARN` | GitHub OIDC 를 신뢰하는 배포 역할 |
 | 레포 Variable `AWS_REGION` · `LAMBDA_FUNCTION_NAME` | `terraform output` 으로 나온다. **이 둘이 비어 있으면 `deploy.yml` 이 통째로 건너뛴다** |
@@ -93,3 +93,7 @@ Terraform 에 기본값을 두지 않았다. 아래가 정해져야 `terraform p
 - `main` · `develop` 직접 push 금지, PR로만 머지. PR 의 base 는 기본값(`develop`) 그대로 두면 된다
 - 브랜치: `feat/<이슈번호>-<설명>` · `fix/<이슈번호>-<설명>` · `chore/<설명>`
 - 커밋: `<타입>: <요약> (#이슈)` 한 줄 (타입: feat · fix · docs · chore · refactor · test · ci). 이 레포는 모듈이 하나라 범위를 붙이지 않는다
+
+## AI 와 일한 방법 (승조가 맡은 부분)
+
+파수꾼 담당은 재범(`@jaebeom79`)이다. 승조(`@SeungJo-02`)가 맡은 초기 구성 · PR 라벨 · CODEOWNERS · develop 전략 · `AGENTS.md`(`#1` `#2` `#3` `#9` `#12`)는 AI(Claude Code)와 함께 만들었다. 절차 · 역할 분담 · 토큰 기준값 · AI 가 틀린 것과 잡은 방법은 `monimo-backend` 의 [`docs/seungjo/harness.md`](https://github.com/2026-techeer-project-team-b/monimo-backend/blob/HEAD/docs/seungjo/harness.md)(정본), 이 레포에서 무엇을 어떻게 물었는지는 [`docs/prompts/`](docs/prompts/README.md) 에 있다. 재범의 작업 방식은 여기서 말하지 않는다.
