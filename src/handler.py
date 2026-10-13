@@ -91,8 +91,11 @@ _FRESHNESS_UNREACHABLE = ":rotating_light: 파수꾼 — API 서버 신선도 �
 
 
 def _stale_text(freshness: dict) -> str:
-    last_signal_at = freshness.get("last_signal_at") or "없음"
+    """카나리가 한 건도 없으면 last_signal_at · age_sec 이 null 로 온다 (backend #160). 그때는 시각을 적지 않는다"""
+    threshold = freshness.get("threshold_sec")
+    if freshness.get("age_sec") is None:
+        return f":rotating_light: 파수꾼 — 카나리가 끊겼습니다 (마지막 신호 없음 / 기준 {threshold}초)"
     return (
         ":rotating_light: 파수꾼 — 카나리가 끊겼습니다 "
-        f"(마지막 신호 {last_signal_at}, {freshness.get('age_sec')}초 전 / 기준 {freshness.get('threshold_sec')}초)"
+        f"(마지막 신호 {freshness['last_signal_at']}, {freshness['age_sec']}초 전 / 기준 {threshold}초)"
     )
