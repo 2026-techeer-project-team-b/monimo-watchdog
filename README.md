@@ -22,7 +22,10 @@
 1. `traceparent`(`00-<32hex>-<16hex>-01`) + `tracestate: monimon=canary` 를 붙여 쇼핑몰 주문 API 에 가짜 주문 1건
 2. 바로 `GET /api/v1/internal/canary/freshness?service_name=shop-order` (`X-Internal-Token`)
 3. `fresh` 가 false 면 전용 Slack 웹훅
-4. 무엇으로 끝났든 Healthchecks.io 핑
+4. `GET /api/v1/internal/self-check` (`X-Internal-Token`, backend #226) — PG 두드림 · 탐지 · 수집기 낡음 게이지. `ok` 가 false 인 항목마다 Slack 한 줄 (한 메시지)
+5. 무엇으로 끝났든 Healthchecks.io 핑
+
+**자기 점검은 카나리와 따로 본다.** 카나리는 "신호가 끝까지 흐르나", 자기 점검은 "PG · 탐지 · 수집기가 멈췄나" 다. backend #208 ⑥ 실측에서 PG 를 멈추자 탐지 · 알림이 PG 에 막혀 경보가 0건이었고, probe · 카나리도 PG 를 안 봐서 밖에서 보는 눈이 파수꾼뿐이었다. 결과의 `self_check` 는 `OK` · `PROBLEM` · `UNREACHABLE`.
 
 **기다리지 않는다.** 2번에서 보이는 것은 방금 쏜 카나리가 아니라 직전 주기(60초 전)에 쏜 것이다. 내 것이 도착할 때까지 기다리면 Lambda 가 30~60초를 붙잡고 있어야 해서 1분 주기에 상주 서버와 다를 게 없어진다.
 
